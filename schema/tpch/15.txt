@@ -1,0 +1,5 @@
+s_suppkey integer not null
+s_name char(25) not null
+s_address varchar(40) not null
+s_phone char(15) not null
+total_revenue decimal(12,2) not null

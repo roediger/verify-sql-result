@@ -1,0 +1,3 @@
+l_shipmode char(10) not null
+high_line_count integer not null
+low_line_count integer not null

@@ -1,0 +1,4 @@
+supp_nation char(25) not null
+cust_nation char(25) not null
+l_year integer not null
+revenue decimal(12,2) not null

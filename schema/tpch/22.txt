@@ -1,0 +1,3 @@
+cntrycode char(15) not null
+numcust integer not null
+totacctbal decimal(12,2) not null

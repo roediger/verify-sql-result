@@ -1,0 +1,6 @@
+c_name varchar(25) not null
+c_custkey integer not null
+o_orderkey bigint not null
+o_orderdate date not null
+o_totalprice decimal(12,2) not null
+sum decimal(12,2) not null

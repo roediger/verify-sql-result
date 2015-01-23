@@ -1,0 +1,2 @@
+ps_partkey integer not null
+value decimal(12,2) not null

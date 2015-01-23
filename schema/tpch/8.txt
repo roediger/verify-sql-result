@@ -1,0 +1,2 @@
+o_year integer not null
+mkt_share decimal(12,2) not null

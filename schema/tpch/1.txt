@@ -1,0 +1,10 @@
+l_returnflag char(1) not null
+l_linestatus char(1) not null
+sum_qty decimal(12,2) not null
+sum_base_price decimal(12,2) not null
+sum_disc_price decimal(12,2) not null
+sum_charge decimal(12,2) not null
+avg_qty decimal(12,2) not null
+avg_price decimal(12,2) not null
+avg_disc decimal(12,2) not null
+count_order integer

@@ -1,0 +1,2 @@
+o_orderpriority char(15) not null
+order_count integer not null

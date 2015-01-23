@@ -1,0 +1,4 @@
+l_orderkey bigint not null
+revenue decimal(12,2) not null
+o_orderdate date not null
+o_shippriority integer not null

@@ -1,0 +1,2 @@
+n_name char(25) not null
+revenue decimal(12,2) not null

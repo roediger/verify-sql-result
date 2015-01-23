@@ -1,0 +1,4 @@
+p_brand char(10) not null
+p_type varchar(25) not null
+p_size integer not null
+supplier_cnt integer not null

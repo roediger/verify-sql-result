@@ -1,0 +1,3 @@
+nation char(25) not null
+o_year integer not null
+sum_profit decimal(12,2) not null

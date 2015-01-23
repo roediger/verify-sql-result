@@ -1,0 +1,1 @@
+promo_revenue decimal(12,2) not null
