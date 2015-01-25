@@ -1,12 +1,15 @@
 //---------------------------------------------------------------------------
 // (c) 2014 Wolf Roediger <roediger@in.tum.de>
 //---------------------------------------------------------------------------
+#include <cmath>
+#include <cstring>
 #include <dirent.h>
 #include <iostream>
 #include <memory>
 #include <sstream>
 #include <unistd.h>
 #include <vector>
+#include <stdlib.h>
 #include "MappedFile.hpp"
 #include "StructuredFile.hpp"
 //---------------------------------------------------------------------------
@@ -87,6 +90,9 @@ private:
             }
          }
       }
+      for (; decimalPlaces < precision; ++decimalPlaces) {
+         decimal.second *= 10;
+      }
       return decimal;
    }
 
@@ -118,7 +124,15 @@ private:
       return input == reference;
    }
 
-   bool compareDecimal(string input, string reference, int length, int precision) {
+   double fractionToDouble(int fraction) {
+      int numberOfDigits = 1;
+      if (fraction != 0) {
+         numberOfDigits = floor(log10(abs(fraction))) + 1;
+      }
+      return 1.0*fraction/pow(10, numberOfDigits);
+   }
+
+   bool compareDecimal(string input, string reference, int length, int precision, double epsilon) {
       pair<uint64_t, uint64_t> inputDecimal;
       try {
          inputDecimal = parseDecimal(input, length, precision);
@@ -131,14 +145,21 @@ private:
       } catch (SchemaException& e) {
          throw SchemaReferenceFileException(e.what());
       }
-      return inputDecimal.first == referenceDecimal.first && inputDecimal.second == referenceDecimal.second;
+      if (epsilon == 0.0) {
+         return inputDecimal.first == referenceDecimal.first && inputDecimal.second == referenceDecimal.second;
+      } else {
+         double inputDouble = inputDecimal.first + fractionToDouble(inputDecimal.second);
+         double referenceDouble = referenceDecimal.first + fractionToDouble(referenceDecimal.second);
+         double delta = fabs(inputDouble - referenceDouble)/referenceDouble*100.0;
+         return delta < epsilon;
+      }
    }
 
    bool compareDate(string input, string reference) {
       return stol(input) == stol(reference);
    }
 
-   bool compare(int attributeNumber, string input, string reference) {
+   bool compare(int attributeNumber, string input, string reference, double epsilon) {
       Attribute attribute = attributes[attributeNumber];
       if (attribute.null) {
          if (input == "null" && reference == "null") {
@@ -162,7 +183,7 @@ private:
          case(Attribute::Type::Char):
          return compareChar(input, reference, attribute.length);
          case(Attribute::Type::Decimal):
-         return compareDecimal(input, reference, attribute.length, attribute.precision);
+         return compareDecimal(input, reference, attribute.length, attribute.precision, epsilon);
          case(Attribute::Type::Date):
          return compareDate(input, reference);
       }
@@ -342,7 +363,7 @@ public:
       }
    }
 
-   void compare(util::StructuredFile& inputFile, util::StructuredFile& referenceFile) {
+   void compare(util::StructuredFile& inputFile, util::StructuredFile& referenceFile, double epsilon) {
       bool inputFinished = false;
       bool referenceFinished = false;
       while (true) {
@@ -374,7 +395,7 @@ public:
                throwError(inputFile, "too many results");
             }
             try {
-               if (!compare(field, input, reference)) {
+               if (!compare(field, input, reference, epsilon)) {
                   throwError(inputFile, string("expected ") + reference + string(" got ") + input);
                }
             } catch(SchemaInputFileException& e) {
@@ -394,15 +415,25 @@ private:
    string inputPath;
    string referencePath;
    string schemaPath;
+   double epsilon;
+   bool ignoreFirstLine;
 
    void parseCommandLineArguments(int argc, char *argv[]) {
-      if (argc != 4) {
-         cerr << "Usage: " << argv[0] << " input reference schema" << endl;
+      if (argc < 4 || argc > 6) {
+         cerr << "Usage: " << argv[0] << " input reference schema [ignoreFirstLine] [epsilon]" << endl;
          exit(EXIT_FAILURE);
       }
       inputPath = argv[1];
       referencePath = argv[2];
       schemaPath = argv[3];
+      ignoreFirstLine = true;
+      if (argc > 4) {
+         ignoreFirstLine = strcmp(argv[4], "true");
+      }
+      epsilon = 0.0;
+      if (argc > 5) {
+         epsilon = atof(argv[5]);
+      }
       exitIfPathIsAbsent(inputPath);
       exitIfPathIsAbsent(referencePath);
       exitIfPathIsAbsent(schemaPath);
@@ -446,11 +477,12 @@ private:
       string inputFilename = concatenatePath(inputPath, filename);
       exitIfPathIsAbsent(inputFilename);
       util::StructuredFile inputFile(inputFilename);
+      inputFile.ignoreFirstLine = ignoreFirstLine;
       string referenceFilename = concatenatePath(referencePath, filename);
       exitIfPathIsAbsent(referenceFilename);
       util::StructuredFile referenceFile(referenceFilename);
       try {
-         schema.compare(inputFile, referenceFile);
+         schema.compare(inputFile, referenceFile, epsilon);
       } catch (SchemaException& e) {
          cerr << e.what() << endl;
          cerr << "skipping file after first error" << endl;
