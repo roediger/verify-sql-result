@@ -1,10 +1,14 @@
 //---------------------------------------------------------------------------
 // (c) 2014 Wolf Roediger <roediger@in.tum.de>
 //---------------------------------------------------------------------------
+#include <algorithm>
+#include <cctype>
 #include <cmath>
 #include <cstring>
 #include <dirent.h>
+#include <functional>
 #include <iostream>
+#include <locale>
 #include <memory>
 #include <sstream>
 #include <unistd.h>
@@ -104,24 +108,46 @@ private:
       return stol(input) == stol(reference);
    }
 
-   bool compareVarchar(string input, string reference, int length) {
+   static inline string &ltrim(string &input) {
+      input.erase(input.begin(), find_if(input.begin(), input.end(), not1(ptr_fun<int, int>(isspace))));
+      return input;
+   }
+
+   static inline string &rtrim(string &input) {
+      input.erase(find_if(input.rbegin(), input.rend(), not1(ptr_fun<int, int>(isspace))).base(), input.end());
+      return input;
+   }
+
+   static inline string &trim(string &input) {
+      return ltrim(rtrim(input));
+   }
+
+   bool compareVarchar(string input, string reference, int length, bool trimStrings) {
       if (input.length() > length) {
          throw SchemaInputFileException("varchar field exceeds length");
       }
       if (reference.length() > length) {
          throw SchemaReferenceFileException("varchar field exceeds length");
       }
-      return input == reference;
+      if (trimStrings) {
+         return trim(input) == trim(reference);
+      } else {
+         return input == reference;
+      }
    }
 
-   bool compareChar(string input, string reference, int length) {
+   bool compareChar(string input, string reference, int length, bool trimStrings) {
       if (input.length() > length) {
          throw SchemaInputFileException("character field exceeds length");
       }
       if (reference.length() > length) {
          throw SchemaReferenceFileException("character field exceeds length");
       }
-      return input == reference;
+      if (trimStrings) {
+         return trim(input) == trim(reference);
+      } else {
+         return input == reference;
+      }
    }
 
    double fractionToDouble(int fraction) {
@@ -159,7 +185,7 @@ private:
       return stol(input) == stol(reference);
    }
 
-   bool compare(int attributeNumber, string input, string reference, double epsilon) {
+   bool compare(int attributeNumber, string input, string reference, double epsilon, bool trimStrings) {
       Attribute attribute = attributes[attributeNumber];
       if (attribute.null) {
          if (input == "null" && reference == "null") {
@@ -179,9 +205,9 @@ private:
          case(Attribute::Type::BigInt):
          return compareBigInt(input, reference);
          case(Attribute::Type::Varchar):
-         return compareVarchar(input, reference, attribute.length);
+         return compareVarchar(input, reference, attribute.length, trimStrings);
          case(Attribute::Type::Char):
-         return compareChar(input, reference, attribute.length);
+         return compareChar(input, reference, attribute.length, trimStrings);
          case(Attribute::Type::Decimal):
          return compareDecimal(input, reference, attribute.length, attribute.precision, epsilon);
          case(Attribute::Type::Date):
@@ -363,7 +389,7 @@ public:
       }
    }
 
-   void compare(util::StructuredFile& inputFile, util::StructuredFile& referenceFile, double epsilon) {
+   void compare(util::StructuredFile& inputFile, util::StructuredFile& referenceFile, double epsilon, bool trimStrings) {
       bool inputFinished = false;
       bool referenceFinished = false;
       while (true) {
@@ -395,7 +421,7 @@ public:
                throwError(inputFile, "too many results");
             }
             try {
-               if (!compare(field, input, reference, epsilon)) {
+               if (!compare(field, input, reference, epsilon, trimStrings)) {
                   throwError(inputFile, string("expected ") + reference + string(" got ") + input);
                }
             } catch(SchemaInputFileException& e) {
@@ -417,10 +443,11 @@ private:
    string schemaPath;
    double epsilon;
    bool ignoreFirstLine;
+   bool trimStrings;
 
    void parseCommandLineArguments(int argc, char *argv[]) {
-      if (argc < 4 || argc > 6) {
-         cerr << "Usage: " << argv[0] << " input reference schema [ignoreFirstLine] [epsilon]" << endl;
+      if (argc < 4 || argc > 7) {
+         cerr << "Usage: " << argv[0] << " input reference schema [ignore first line] [epsilon] [trim strings]" << endl;
          exit(EXIT_FAILURE);
       }
       inputPath = argv[1];
@@ -428,11 +455,15 @@ private:
       schemaPath = argv[3];
       ignoreFirstLine = true;
       if (argc > 4) {
-         ignoreFirstLine = strcmp(argv[4], "true");
+         ignoreFirstLine = strcmp(argv[4], "true") == 0;
       }
       epsilon = 0.0;
       if (argc > 5) {
          epsilon = atof(argv[5]);
+      }
+      trimStrings = false;
+      if (argc > 6) {
+         trimStrings = strcmp(argv[6], "true") == 0;
       }
       exitIfPathIsAbsent(inputPath);
       exitIfPathIsAbsent(referencePath);
@@ -482,7 +513,7 @@ private:
       exitIfPathIsAbsent(referenceFilename);
       util::StructuredFile referenceFile(referenceFilename);
       try {
-         schema.compare(inputFile, referenceFile, epsilon);
+         schema.compare(inputFile, referenceFile, epsilon, trimStrings);
       } catch (SchemaException& e) {
          cerr << e.what() << endl;
          cerr << "skipping file after first error" << endl;
