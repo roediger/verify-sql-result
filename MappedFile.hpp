@@ -47,6 +47,7 @@ public:
    }
 
    char *mapFile() {
+      if (size == 0) return nullptr;
       char *fileContent = reinterpret_cast<char*>(mmap(NULL, size * sizeof(T), PROT_READ, MAP_FILE|MAP_SHARED, descriptor, 0));
       if (fileContent == MAP_FAILED) {
          std::cout << "failed to open " << filename << std::endl;

@@ -123,17 +123,17 @@ private:
    }
 
    bool compareVarchar(string input, string reference, int length, bool trimStrings) {
+      if (trimStrings) {
+         input = trim(input);
+         reference = trim(reference);
+      }
       if (input.length() > length) {
          throw SchemaInputFileException("varchar field exceeds length");
       }
       if (reference.length() > length) {
          throw SchemaReferenceFileException("varchar field exceeds length");
       }
-      if (trimStrings) {
-         return trim(input) == trim(reference);
-      } else {
-         return input == reference;
-      }
+      return input == reference;
    }
 
    bool compareChar(string input, string reference, int length, bool trimStrings) {
@@ -418,7 +418,19 @@ public:
                throwError(inputFile, "too few results");
             }
             if (referenceFinished) {
-               throwError(inputFile, "too many results");
+               try {
+                  // trim empty lines from end of input file
+                  while (input.size() == 0) {
+                     try {
+                        input = inputFile.getNextField();
+                     } catch (util::EndOfRecordException& e) {
+                        inputFile.getNextRecord();
+                     }
+                  }
+                  throwError(inputFile, "too many results");
+               } catch (util::EndOfFileException& e) {
+                  return;
+               }
             }
             try {
                if (!compare(field, input, reference, epsilon, trimStrings)) {
@@ -515,13 +527,16 @@ private:
       try {
          schema.compare(inputFile, referenceFile, epsilon, trimStrings);
       } catch (SchemaException& e) {
+         failed = true;
          cerr << e.what() << endl;
          cerr << "skipping file after first error" << endl;
       }
    }
 
 public:
-   Verifier(int argc, char *argv[]) {
+   bool failed;
+
+   Verifier(int argc, char *argv[]) : failed(false) {
       parseCommandLineArguments(argc, argv);
    }
 
@@ -537,7 +552,16 @@ public:
 };
 //---------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
-   Verifier verifier(argc, argv);
-   verifier.verify();
+   try {
+      Verifier verifier(argc, argv);
+      verifier.verify();
+      if (verifier.failed) {
+         return EXIT_FAILURE;
+      } else {
+         return EXIT_SUCCESS;
+      }
+   } catch (...) {
+      return EXIT_FAILURE;
+   }
 }
 //---------------------------------------------------------------------------
