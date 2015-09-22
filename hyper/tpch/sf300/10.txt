@@ -1,0 +1,21 @@
+c_custkey c_name revenue c_acctbal n_name c_address c_phone c_comment
+23626387	Customer#023626387	792129.6142	4047.44	SAUDI ARABIA             	RfZn6HSLr1t3JZx6SbLt6,	30-950-648-1181	ully silent accounts-- ironic foxes haggle ruthlessly pending requests. unusual, regular packa
+44005624	Customer#044005624	772571.1214	1704.09	MOROCCO                  	8Wz7bp5VFJp1	25-408-510-2059	deposits nag. special sauternes boost slyly busily regular accounts. furiously even asymptotes am
+11412268	Customer#011412268	751875.5061	5700.71	ALGERIA                  	5,DG,qUcotxgPyZQ3r9E7x7xE	10-673-432-4349	ounts integrate blithely at the regular frays. furiously ironic ideas sleep ruthlessly
+34541281	Customer#034541281	750721.9884	-565.58	EGYPT                    	oK1y8QlZRvnflItGqO G0AuVdgX4PSFUCYcUrkU	14-300-223-9701	 believe about the furiously express accounts. blithely unusual deposits solve sly
+11169961	Customer#011169961	741361.0914	-130.85	FRANCE                   	3ufRPFbpogBt0YQzhr4Dfdsmykxm9OQL5U	16-513-948-2671	ly ironic pinto beans. blithely busy foxes haggle carefully slyly final accounts. even accounts sleep blithely
+29510422	Customer#029510422	735457.6240	5883.10	JAPAN                    	3w6i6rY7EWeMgEHyDFN772Rpa1bwX	22-123-392-4151	tes. furiously special accounts cajole furiously quickly busy asymptotes. even
+37132390	Customer#037132390	734898.2434	9821.44	SAUDI ARABIA             	meAIM6mpaUEOT5pS0Z8pOril2 K,r	30-971-120-9827	sly ironic foxes-- unusual, even 
+11181646	Customer#011181646	725782.2477	3274.65	IRAN                     	urr7lkb9Ph9fRlkCCZlQVsjKu7,ato9R1LkMsK	20-878-632-4240	en, fluffy foxes sleep slyly. final ideas haggle slyly regular deposits. regular pint
+29584792	Customer#029584792	721820.9882	1849.83	BRAZIL                   	zimeJ Yt,UkEfla6lD,gWRSSQTCQIz7EUsqXsnAr	12-886-962-2760	ular packages; carefully pending requests above the unusual, express packages s
+37876916	Customer#037876916	720096.3557	3193.10	IRAQ                     	RThHPJlBdo7eef	21-942-270-3725	he blithely ironic decoys. express instructions might are across the requests. foxes haggle carefully abou
+4703650	Customer#004703650	719140.5317	5057.98	UNITED KINGDOM           	6rOZEckdNGzJI6eG,mi5tUBkoZpRNbHYrImO	33-918-243-9346	ests. slyly regular requests was regular packages. special ins
+13973338	Customer#013973338	718124.7020	4700.82	MOROCCO                  	wElSzNo4mpbz6qNxZWI 9ktx	25-800-522-3304	t epitaphs are final ideas. slyly pending accounts wake c
+5299150	Customer#005299150	717817.1056	8132.70	EGYPT                    	SimVmWhKPPK29H5J9EVaQ	14-359-961-3984	sual dugouts. furiously regular pinto beans wake carefully about the 
+4483723	Customer#004483723	717143.7220	6455.29	KENYA                    	SNBpg  NqPTetmC xH	24-972-426-3977	ans believe blithely. carefully pending dugouts kindle. regular tithes a
+20644288	Customer#020644288	714835.3887	5296.82	SAUDI ARABIA             	ii214CRa,G	30-206-714-9135	 instructions whithout the fluffily pending dependencies haggle around the express
+16720108	Customer#016720108	712917.2915	9979.69	KENYA                    	mvuZQRQTTEza3nq7w50rn2N Oyc9g0XMSuf2wpa	24-312-188-8289	ithely idle excuses about the
+19609774	Customer#019609774	710538.7397	5258.18	CHINA                    	A5XooiBrbYcWxX	28-673-755-1552	ggle fluffily ironic, final warthogs. final, 
+44504971	Customer#044504971	709194.2822	6374.27	JAPAN                    	B7MYkTO,ID44dg712 mLxPcgQMHLmMxmUeg7i6S	22-514-616-7658	gle quickly. quickly special acc
+7476481	Customer#007476481	708883.2647	5533.55	GERMANY                  	RiY23zyrJYGgd2HXviDSpP0iQ	17-811-789-1621	 quiet accounts boost along the 
+10116337	Customer#010116337	708706.1623	3233.61	ALGERIA                  	Q9hWymZDlVOSbW861DFJOCPNW	10-996-379-4737	as mold blithely bold foxes. furiously even requests despite the blithely final packages cajo

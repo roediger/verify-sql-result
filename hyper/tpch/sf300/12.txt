@@ -1,0 +1,3 @@
+l_shipmode high_line_count low_line_count
+MAIL      	1869877	2802930
+SHIP      	1868954	2804791
